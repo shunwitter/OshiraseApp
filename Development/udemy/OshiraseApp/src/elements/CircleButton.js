@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Font } from 'expo';
-import fontAwesome from '../../assets/fonts/fa-solid-900.ttf';
 import { createIconSet } from '@expo/vector-icons';
+import fontAwesome from '../../assets/fonts/fa-solid-900.ttf';
 
 const CustomIcon = createIconSet({
   pencil: '\uf303',
@@ -38,7 +38,7 @@ class CircleButton extends React.Component {
       <View style={[styles.circleButton, style, { backgroundColor : bgColor }]}>
       {
         this.state.fontLoaded ? (
-          <CustomIcon name={ name } style={[styles.circleButtonTitle, { color : textColor }]} />
+          <CustomIcon name={name} style={[styles.circleButtonTitle, { color : textColor }]} />
         ) : null
       }
       </View>
