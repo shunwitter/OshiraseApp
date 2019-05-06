@@ -52,7 +52,7 @@ handleSubmit(){
          placeholder="Password"
          secureTextEntry
          />
-       <TouchableHighlight style={styles.button} onPress={this.handleSubmit.bind(this)}>
+       <TouchableHighlight style={styles.button} onPress={this.handleSubmit.bind(this)} underlayColor="#C70F66">
         <Text style={styles.buttonTitle}>ログインする</Text>
        </TouchableHighlight>
 
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    backgroundColor: '#FFA500',
+    backgroundColor: '#E31676',
     height: 48,
     borderRadius: 2,
     justifyContent: 'center',
