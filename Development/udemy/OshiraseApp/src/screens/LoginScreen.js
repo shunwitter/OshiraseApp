@@ -1,18 +1,29 @@
 import React from 'react';
+import { SecureStore } from 'expo';
 import { StyleSheet, View, Text, TextInput, TouchableHighlight, TouchableOpacity } from 'react-native';
-import CircleButton from '../elements/CircleButton';
-import firebase from "firebase";
+import firebase from 'firebase';
 import { NavigationActions, StackActions } from 'react-navigation';
+import Loading from '../elements/Loading';
 
 class LoginScreen extends React.Component {
   state = {
-    email: '3@example.com',
-    password: 'aaaaaa',
+    email: '',
+    password: '',
+    isLoading: true,
   }
 
-handleSubmit(){
-  firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-  .then(() => {
+  async componentDidMount() {
+    const email = await SecureStore.getItemAsync('email');
+    const password = await SecureStore.getItemAsync('password');
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.setState({ isLoading: false });
+        this.navigateToHome();
+      })
+      .catch();
+  }
+
+  navigateToHome() {
     const resetAction = StackActions.reset({
       index: 0,
       actions: [
@@ -20,45 +31,53 @@ handleSubmit(){
       ],
     });
     this.props.navigation.dispatch(resetAction);
-  })
-  .catch(() => {
-  });
-}
+  }
 
-   handlePress() {
-     this.props.navigation.navigate('Signup');
-   }
+  handleSubmit() {
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then(() => {
+        SecureStore.setItemAsync('email', this.state.email);
+        SecureStore.setItemAsync('password', this.state.password);
+        this.navigateToHome();
+      })
+      .catch();
+  }
+
+  handlePress() {
+    this.props.navigation.navigate('Signup');
+  }
 
   render() {
     return (
       <View style={styles.container}>
-       <Text style={styles.title}>
+      <Loading text="ログイン中" isLoading={this.state.isLoading} />
+        <Text style={styles.title}>
         ログイン
-       </Text>
-       <TextInput
-        style={styles.input}
-        value={this.state.email}
-        onChangeText={(text) => { this.setState({ email: text }); }}
-        autoCapitalize="none"
-        autoCorrect={false}
-        placeholder="Email Address"
+        </Text>
+        <TextInput
+          style={styles.input}
+          value={this.state.email}
+          onChangeText={(text) => { this.setState({ email: text }); }}
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="Email Addres"
         />
         <TextInput
-         style={styles.input}
-         value={this.state.password}
-         onChangeText={(text) => { this.setState({ password: text }); }}
-         autoCapitalize="none"
-         autoCorrect={false}
-         placeholder="Password"
-         secureTextEntry
-         />
-       <TouchableHighlight style={styles.button} onPress={this.handleSubmit.bind(this)} underlayColor="#C70F66">
-        <Text style={styles.buttonTitle}>ログインする</Text>
-       </TouchableHighlight>
+          style={styles.input}
+          value={this.state.password}
+          onChangeText={(text) => { this.setState({ password: text }); }}
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="Password"
+          secureTextEntr
+        />
+        <TouchableHighlight style={styles.button} onPress={this.handleSubmit.bind(this)} underlayColor="#C70F66">
+          <Text style={styles.buttonTitle}>ログインする</Text>
+        </TouchableHighlight>
 
-       <TouchableOpacity style={styles.signup} onPress={this.handlePress.bind(this)} >
-        <Text style={styles.singnupText}>メンバー登録する</Text>
-       </TouchableOpacity>
+        <TouchableOpacity style={styles.signup} onPress={this.handlePress.bind(this)} >
+          <Text style={styles.singnupText}>メンバー登録する</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -102,7 +121,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
 
   },
-  singnupText:{
+  singnupText: {
     fontSize: 16,
   },
 });
