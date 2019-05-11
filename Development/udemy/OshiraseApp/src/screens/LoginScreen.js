@@ -15,6 +15,11 @@ class LoginScreen extends React.Component {
   async componentDidMount() {
     const email = await SecureStore.getItemAsync('email');
     const password = await SecureStore.getItemAsync('password');
+    if (email != null || password != null) {
+      this.setState({ isLoading: false });
+      return;
+    }
+    this.setState({ isLoading: true });
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({ isLoading: false });
